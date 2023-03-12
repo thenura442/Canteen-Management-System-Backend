@@ -1,0 +1,27 @@
+{
+  "name": "cms-express-backend",
+  "version": "1.0.0",
+  "description": "Express Backend For the Canteen Management System",
+  "main": "server.js",
+  "scripts": {
+    "serve": "nodemon serve.js"
+  },
+  "keywords": [
+    "Express",
+    "MongoDB",
+    "REST_API"
+  ],
+  "author": "Thenura",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/joi": "^17.1.1",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mongoose": "^7.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.21"
+  }
+}
