@@ -31,7 +31,7 @@ app.use('/', (req, res) => {
         message: 'Server Loaded Successfully',
         Description: config.name+' RestAPI For a MEAN Application Project',
         Port: config.port,
-        BaseUrl: config.url   
+        BaseUrl: config.url
     });
 })
 
