@@ -1,4 +1,4 @@
-const file = require( "../Services/user.service" );
+const file = require( "./user.service" );
 const FileService = new file();
 
 module.exports = { createUser, getNewId ,getAllUsers ,findOne , updateOne, updateMany , deleteOne , deleteMany, getLecturers };

@@ -1,7 +1,7 @@
 const file = require( "../Services/vendor.service" );
 const FileService = new file();
 
-module.exports = { createVendor ,getAllVendors ,findOne , updateOne , deleteOne };
+module.exports = { createVendor , getAllVendors , getVendor , updateVendor , deleteVendor };
 
 /**
  * @description Create a cord with the provided body
@@ -21,7 +21,7 @@ async function createVendor ( req, res ) {
 
 
 /**
- * @description Get all Users with the type provided by body
+ * @description Get all Vendors
  * @param req {object} Express req object 
  * @param res {object} Express res object
  * @returns {object} success or failure object
@@ -38,12 +38,12 @@ async function getAllVendors ( req, res ) {
 
 
 /**
- * @description Get specific User with the type and _id provided by body
+ * @description Get specific vendor with the email provided by body
  * @param req {object} Express req object 
  * @param res {object} Express res object
  * @returns {object} success or failure object
  */
-async function findOne ( req, res ) {
+async function getVendor ( req, res ) {
   try {
     const result = await FileService.findOne( req.body);
     console.log(result);
@@ -56,12 +56,12 @@ async function findOne ( req, res ) {
 
 
 /**
- * @description Update specific User with the type and _id provided by body
+ * @description Update specific vendor with the email provided by body
  * @param req {object} Express req object 
  * @param res {object} Express res object
  * @returns {object} success or failure object
  */
-async function updateOne ( req, res ) {
+async function updateVendor ( req, res ) {
   try {
     const result = await FileService.update( req.body);
     return res.send( result );
@@ -73,12 +73,12 @@ async function updateOne ( req, res ) {
 
 
 /**
- * @description Delete specific user with the type and _id provided by body
+ * @description Delete specific vendor with the email provided by body
  * @param req {object} Express req object 
  * @param res {object} Express res object
  * @returns {object} success or failure object
  */
-async function deleteOne ( req, res ) {
+async function deleteVendor ( req, res ) {
   try {
     const result = await FileService.delete( req.body);
     return res.send( result );

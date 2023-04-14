@@ -1,8 +1,8 @@
 // services/PostService.js
 const bcrypt = require('bcryptjs');
-const MongooseService = require( '../Utils/functions' ); // Data Access Layer
-const FileModel = require( "../Models/user.model" ); // Database Model
-const { registerStudentValidation , registerStaffValidation  } = require("../Validation/user.validation");
+const MongooseService = require( '../Src/Utils/functions' ); // Data Access Layer
+const FileModel = require( "./user.model" ); // Database Model
+const { registerStudentValidation , registerStaffValidation  } = require("./user.validation");
 
 
 class FileService {

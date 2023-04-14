@@ -66,7 +66,7 @@ class MongooseService {
     deleteMany( query ) {
       return this.model
         .deleteMany( query )
-        .select({ __v: 0 });
+        .select({ __v: 0 }); //CHECK WHAT THIS IS *******************************#####################**********************************************************************************************
     }
 
 
@@ -80,7 +80,7 @@ class MongooseService {
     findDistinct ( query, field ) {
       return this.model
         .find( query )
-        .distinct( field );
+        .distinct( field ); //CHECK WHAT THIS IS *******************************#####################**********************************************************************************************
     }
 
     
@@ -91,9 +91,9 @@ class MongooseService {
      * @param {object} [projection] Optional: Fields to return or not return from query
      * @returns {object} Returns the results of the query
      */
-    findOne ( query, projection = { __v: 0 } ) {
+    findOne ( query) {
       return this.model
-        .findOne( query, projection );
+        .findOne( query ); //CHECK WHAT THIS IS *******************************#####################**********************************************************************************************
     }
 
 
@@ -108,7 +108,7 @@ class MongooseService {
      */
     findById ( id, projection = { __v: 0 }) {
       return this.model
-        .findById( id, projection );
+        .findById( id, projection ); //CHECK WHAT THIS IS *******************************#####################**********************************************************************************************
     }
   
 
@@ -121,7 +121,7 @@ class MongooseService {
       return this.model
         .findOne({})
         .limit(1)
-        .sort({$natural:-1})
+        .sort({$natural:-1}) //CHECK WHAT THIS IS *******************************#####################**********************************************************************************************
     }
 
 
@@ -133,8 +133,8 @@ class MongooseService {
      */
     find( query, sort ,projection = { __v: 0 }) {
       return this.model
-        .find( query , projection )
-        .sort(sort); 
+        .find( query , projection ) //CHECK WHAT THIS IS *******************************#####################**********************************************************************************************
+        .sort(sort);  //CHECK WHAT THIS IS *******************************#####################**********************************************************************************************
     }
 
 
@@ -148,7 +148,7 @@ class MongooseService {
      */
     update ( id, body, options = { lean: true, new: true } ) {
       return this.model
-        .findByIdAndUpdate( id, body, options );
+        .findByIdAndUpdate( id, body, options ); //CHECK WHAT THIS IS *******************************#####################**********************************************************************************************
     }
 
 
@@ -159,9 +159,9 @@ class MongooseService {
      * @param {object} [options] Optional options to provide query
      * @returns {object} Returns the results of the query
      */
-    updateOne ( query, body, options = { lean: true, new: true } ) {
+    updateOne ( query, body ) {
       return this.model
-        .update( query, body, options );
+        .updateOne( query, body ); //CHECK WHAT THIS IS *******************************#####################**********************************************************************************************
     }
 
 
@@ -175,7 +175,7 @@ class MongooseService {
      */
     updateMany ( condition, update, options = { lean: true, new: true } ) {
       return this.model
-        .updateMany( condition, update, options );
+        .updateMany( condition, update, options ); //CHECK WHAT THIS IS *******************************#####################**********************************************************************************************
     }
 
 

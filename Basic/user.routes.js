@@ -1,5 +1,5 @@
 const router = require("express").Router();
-let user = require("../../Controllers/user.controller")
+let user = require("./user.controller")
 
 //Routes related to user actions of types temp-admin, staff, lecturer and student
 router.post("/register", user.createUser);

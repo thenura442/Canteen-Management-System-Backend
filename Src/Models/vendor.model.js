@@ -2,14 +2,13 @@ const mongoose = require("mongoose");
 
   const VendorSchema = new mongoose.Schema(
     {
-      _id: String,
-      name: String,
+      vendor_name: String,
+      owner: String,
       email: String,
       description: String,
+      url: String,
       mobile_no: String,
-      owner: String,
-      access: String,
-      url: String
+      access: String
     },
     { 
       timestamps: true 

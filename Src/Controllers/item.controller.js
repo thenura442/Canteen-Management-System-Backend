@@ -1,7 +1,7 @@
-const file = require( "../Services/vendor.service" );
+const file = require( "../Services/item.service" );
 const FileService = new file();
 
-module.exports = { createItem ,getAllItems ,findOne , updateOne , deleteOne };
+module.exports = { createItem ,getAllItems ,getItem , updateItem , deleteItem };
 
 /**
  * @description Create a cord with the provided body
@@ -43,13 +43,13 @@ async function getAllItems ( req, res ) {
  * @param res {object} Express res object
  * @returns {object} success or failure object
  */
-async function findOne ( req, res ) {
+async function getItem ( req, res ) {
   try {
     const result = await FileService.findOne( req.body);
     console.log(result);
     return res.send( result );
   } catch ( err ) {
-    console.log( err ); 
+    console.log( err );
     res.status( 500 ).send( { Status: 500 , Success: false, Error : `${err.name} : ${err.message}`  } );
   }
 }
@@ -61,7 +61,7 @@ async function findOne ( req, res ) {
  * @param res {object} Express res object
  * @returns {object} success or failure object
  */
-async function updateOne ( req, res ) {
+async function updateItem ( req, res ) {
   try {
     const result = await FileService.update( req.body);
     return res.send( result );
@@ -78,7 +78,7 @@ async function updateOne ( req, res ) {
  * @param res {object} Express res object
  * @returns {object} success or failure object
  */
-async function deleteOne ( req, res ) {
+async function deleteItem ( req, res ) {
   try {
     const result = await FileService.delete( req.body);
     return res.send( result );
@@ -87,3 +87,20 @@ async function deleteOne ( req, res ) {
     res.status( 500 ).send( { Status: 500 , Success: false, Error : `${err.name} : ${err.message}`  } );
   }
 }
+
+
+// /**
+//  * @description Delete specific user with the type and _id provided by body
+//  * @param req {object} Express req object 
+//  * @param res {object} Express res object
+//  * @returns {object} success or failure object
+//  */
+// async function getID ( req, res ) {
+//   try {
+//     const result = await FileService.getNewId( req.body.type);
+//     return res.send( result );
+//   } catch ( err ) {
+//     console.log( err ); 
+//     res.status( 500 ).send( { Status: 500 , Success: false, Error : `${err.name} : ${err.message}`  } );
+//   }
+// }

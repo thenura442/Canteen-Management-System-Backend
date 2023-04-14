@@ -6,11 +6,11 @@ dotenv.config();
 //Defining the Configurations using .env file and defining some options if incase the .env file is not defined or throws an error
 
 const config = {
-    dbUrl: process.env.DB_CONNECTION || "mongodb+srv://Admin:admin123@cms.zx94qdf.mongodb.net/?retryWrites=true&w=majority",
-    port: process.env.PORT || 5000,
-    env: process.env.APP_ENV || "development",
-    name: process.env.APP_NAME || "DLE Backend Server",
-    url: process.env.APP_URL || "http://localhost:5000",
+    dbUrl: process.env.DB_CONNECTION || "mongodb+srv://Admin:admin123@cms.zx94qdf.mongodb.net/test",
+    port: process.env.PORT || 5500,
+    env: process.env.APP_ENV || "Development",
+    name: process.env.APP_NAME || "CMS Backend Server",
+    url: process.env.APP_URL || "http://localhost:",
     logDir: process.env.LOG_DIR || "Logs"
   };
   
