@@ -8,8 +8,6 @@ const registerVendorValidation = data => {
             .min(3)
             .max(255)
             .required(),
-        owner: Joi.string()
-            .required(),
         email: Joi.string()
             .min(6)
             .max(255)

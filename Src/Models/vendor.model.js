@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
   const VendorSchema = new mongoose.Schema(
     {
       vendor_name: String,
-      owner: String,
       email: String,
       description: String,
       url: String,

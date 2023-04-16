@@ -83,17 +83,17 @@ class MongooseService {
         .distinct( field ); //CHECK WHAT THIS IS *******************************#####################**********************************************************************************************
     }
 
-    
-  
+ 
     /**
      * @description Retrieve a single document from the Model with the provided query
      * @param query {object} Query to be performed on the Model
      * @param {object} [projection] Optional: Fields to return or not return from query
      * @returns {object} Returns the results of the query
      */
-    findOne ( query) {
+    findOne ( query ) {
+      
       return this.model
-        .findOne( query ); //CHECK WHAT THIS IS *******************************#####################**********************************************************************************************
+        .findOne( query , {createdAt:0,_id:0, updatedAt:0, __v:0} ); //CHECK WHAT THIS IS *******************************#####################**********************************************************************************************
     }
 
 

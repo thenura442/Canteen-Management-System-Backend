@@ -67,6 +67,7 @@ class FileService {
    */
   async findOne( body ) {
     try {
+      console.log( body );
       return await this.MongooseServiceInstance.findOne({email : body.email});
     } 
     catch ( err ) {
