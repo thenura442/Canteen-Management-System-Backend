@@ -19,7 +19,7 @@ const registerItemValidation = data => {
             .max(1024),
         type: Joi.string()
             .required(),
-        portion: Joi.string()
+        meal_type: Joi.string()
             .required(),
         price: Joi.string()
             .required(),

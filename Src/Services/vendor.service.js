@@ -1,42 +1,57 @@
 // services/PostService.js
-const MongooseService = require( '../Utils/functions' ); // Data Access Layer
-const FileModel = require( "../Models/vendor.model" ); // Database Model
+const MongooseService = require('../Utils/functions'); // Data Access Layer
+const FileModel = require("../Models/vendor.model"); // Database Model
 const { registerVendorValidation } = require("../Validation/vendor.validation");
+const aws = require('../Middleware/aws-bucket');
+const fs = require('fs');
 
 
 class FileService {
   /**
    * @description Create an instance of PostService
    */
-  constructor () {
+  constructor() {
     // Create instance of Data Access layer using our desired model
-    this.MongooseServiceInstance = new MongooseService( FileModel.Vendor );
+    this.MongooseServiceInstance = new MongooseService(FileModel.Vendor);
   }
 
-  
+
   /**
    * @description Attempt to create a post with the provided object
    * @param body {object} Object containing all required fields to
    * create post
    * @returns {Object}
    */
-  async create ( body) {
+  async create(body) {
     try {
       //Validating with joi schema by calling VendorValidation function
-      if(body != null){
+      if (body != null) {
         let { error } = registerVendorValidation(body);
-        if (error) return {Status: "400" , Error: error.details[0].message }
+        if (error) return { Status: "400", Error: error.details[0].message }
       }
 
       //Check if email already exists
       let emailExist = await this.findEmailExist(body.email);
-      if(emailExist) return  {Status: "400" , Email : emailExist.email, Error: "Email Already Exists!" }
+      if (emailExist) return { Status: "400", Email: emailExist.email, Error: "Email Already Exists!" }
 
+      let aws_url =  await aws.uploadfile(body.url)
+
+
+      fs.unlink(body.url, (err) => {
+        if (err) {
+            throw err;
+        }
+
+        console.log("Delete File successfully.");
+    });
+
+
+      body.url = aws_url.Location;
       return await this.MongooseServiceInstance.create( body )
-    } 
-    catch ( err ) {
-      console.log( err)
-      return { Status: 500 , Error : `${err.name} : ${err.message} `, Location: "./Src/Service/subject.service.js - create(body)"};
+    }
+    catch (err) {
+      console.log(err)
+      return { Status: 500, Error: `${err.name} : ${err.message} `, Location: "./Src/Service/subject.service.js - create(body)" };
     }
   }
 
@@ -47,13 +62,31 @@ class FileService {
    * find posts
    * @returns {Object}
    */
-  async find( body ) {
+  async find(body) {
     try {
-        return await this.MongooseServiceInstance.find();
-    } 
-    catch ( err ) {
-      console.log( err)
-      return { Status: 500 , Error : `${err.name} : ${err.message} `, Location: "./Src/Service/user.service.js - find(body)"};
+      return await this.MongooseServiceInstance.find();
+    }
+    catch (err) {
+      console.log(err)
+      return { Status: 500, Error: `${err.name} : ${err.message} `, Location: "./Src/Service/user.service.js - find(body)" };
+    }
+  }
+
+
+
+   /**
+   * @description Attempt to find posts with the provided object
+   * @param body {object} Object containing 'email' field to
+   * find posts
+   * @returns {Object}
+   */
+   async findAvailable(body) {
+    try {
+      return await this.MongooseServiceInstance.find({access: "open"});
+    }
+    catch (err) {
+      console.log(err)
+      return { Status: 500, Error: `${err.name} : ${err.message} `, Location: "./Src/Service/user.service.js - find(body)" };
     }
   }
 
@@ -65,14 +98,31 @@ class FileService {
    * find specific post
    * @returns {Object}
    */
-  async findOne( body ) {
+  async findOne(body) {
     try {
-      console.log( body );
-      return await this.MongooseServiceInstance.findOne({email : body.email});
-    } 
-    catch ( err ) {
-      console.log( err)
-      return { Status: 500 , Error : `${err.name} : ${err.message} `, Location: "./Src/Service/subject.service.js - findSubject(body)"};
+      return await this.MongooseServiceInstance.findOne({ email: body.email });
+    }
+    catch (err) {
+      console.log(err)
+      return { Status: 500, Error: `${err.name} : ${err.message} `, Location: "./Src/Service/subject.service.js - findSubject(body)" };
+    }
+  }
+
+
+  /**
+   * @description Attempt to find a post with the provided object
+   * @param body {object} Object containing 'email' field to
+   * find specific post
+   * @returns {Object}
+   */
+  async findOneAvailable(body) {
+    try {
+      console.log(body);
+      return await this.MongooseServiceInstance.findOne({ email: body.email, access: "open" });
+    }
+    catch (err) {
+      console.log(err)
+      return { Status: 500, Error: `${err.name} : ${err.message} `, Location: "./Src/Service/subject.service.js - findSubject(body)" };
     }
   }
 
@@ -83,20 +133,46 @@ class FileService {
    * update specific post
    * @returns {Object}
    */
-  async update( body ) {
+  async update(body) {
     try {
 
       //Validating with joi schema by calling VendorValidation function
-      if(body != null){
+      if (body != null) {
         let { error } = registerVendorValidation(body);
-        if (error) return {Status: "400" , Error: error.details[0].message }
+        if (error) return { Status: "400", Error: error.details[0].message }
       }
 
-      return await this.MongooseServiceInstance.updateOne({email: body.email},body);
-    } 
-    catch ( err ) {
-      console.log( err)
-      return { Status: 500 , Error : `${err.name} : ${err.message} `, Location: "./Src/Service/subject.service.js - updateSubject(body)"};
+      //Check if image is the same
+      let imageExist = await this.findOne({ email: body.email });
+      console.log(imageExist)
+      if (imageExist != null && imageExist.url === body.url) {
+        return await this.MongooseServiceInstance.updateOne({ email: body.email }, body);
+      }
+
+      if (imageExist != null && imageExist.url != body.url) {
+
+        await aws.deletefile(imageExist.url);
+
+        let aws_url = await aws.uploadfile(body.url)
+
+
+        fs.unlink(body.url, (err) => {
+          if (err) {
+            throw err;
+          }
+
+          console.log("Deleted File successfully.");
+        });
+
+
+        body.url = aws_url.Location;
+        
+        return await this.MongooseServiceInstance.updateOne({ email: body.email }, body);
+      }
+    }
+    catch (err) {
+      console.log(err)
+      return { Status: 500, Error: `${err.name} : ${err.message} `, Location: "./Src/Service/subject.service.js - updateSubject(body)" };
     }
   }
 
@@ -108,13 +184,16 @@ class FileService {
    * find specific post
    * @returns {Object}
    */
-  async delete( body ) {
+  async delete(body) {
     try {
-      return await this.MongooseServiceInstance.deleteOne({email: body.email});
-    } 
-    catch ( err ) {
-      console.log( err)
-      return { Status: 500 , Error : `${err.name} : ${err.message} `, Location: "./Src/Service/subject.service.js - deleteSubject(body)"};
+
+      await aws.deletefile(body.url);
+
+      return await this.MongooseServiceInstance.deleteOne({ email: body.email });
+    }
+    catch (err) {
+      console.log(err)
+      return { Status: 500, Error: `${err.name} : ${err.message} `, Location: "./Src/Service/subject.service.js - deleteSubject(body)" };
     }
   }
 
@@ -126,13 +205,13 @@ class FileService {
    * find post
    * @returns {Object}
    */
-  async findEmailExist( email ) {
+  async findEmailExist(email) {
     try {
-        return await this.MongooseServiceInstance.findOne({email : email});
-    } 
-    catch ( err ) {
-        console.log( err)
-        return { Status: 500 , Error : `${err.name} : ${err.message} `, Location: "./Src/Services/customer.service.js - findEmailExist(email)"};
+      return await this.MongooseServiceInstance.findOne({ email: email });
+    }
+    catch (err) {
+      console.log(err)
+      return { Status: 500, Error: `${err.name} : ${err.message} `, Location: "./Src/Services/customer.service.js - findEmailExist(email)" };
     }
   }
 }

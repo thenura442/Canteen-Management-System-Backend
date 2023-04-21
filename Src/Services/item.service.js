@@ -50,7 +50,8 @@ class FileService {
    */
   async find(body) {
     try {
-      let result = await this.MongooseServiceInstance.find();
+      console.log(body);
+      let result = await this.MongooseServiceInstance.find({vendor: body.email, availability: "available"});
       if (result == null) { return { status: 400 } }
       return result;
     }

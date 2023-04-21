@@ -8,7 +8,7 @@ const mongoose = require("mongoose");
       description: String,
       url: String,
       type: String,
-      portion: String,
+      meal_type: String,
       price: String,
       availability: String
     },

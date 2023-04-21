@@ -1,7 +1,7 @@
 const file = require( "../Services/vendor.service" );
 const FileService = new file();
 
-module.exports = { createVendor , getAllVendors , getVendor , updateVendor , deleteVendor };
+module.exports = { createVendor , getAllVendors , getVendor , updateVendor , deleteVendor, getAvailableVendors , getAvailableVendor };
 
 /**
  * @description Create a cord with the provided body
@@ -38,6 +38,23 @@ async function getAllVendors ( req, res ) {
 
 
 /**
+ * @description Get all Vendors
+ * @param req {object} Express req object 
+ * @param res {object} Express res object
+ * @returns {object} success or failure object
+ */
+async function getAvailableVendors ( req, res ) {
+  try {
+    const result = await FileService.findAvailable( req.body);
+    return res.send( result );
+  } catch ( err ) {
+    console.log( err ); 
+    res.status( 500 ).send( { Status: 500 , Success: false, Error : `${err.name} : ${err.message}`  } );
+  }
+}
+
+
+/**
  * @description Get specific vendor with the email provided by body
  * @param req {object} Express req object 
  * @param res {object} Express res object
@@ -46,6 +63,24 @@ async function getAllVendors ( req, res ) {
 async function getVendor ( req, res ) {
   try {
     const result = await FileService.findOne( req.body);
+    console.log(result);
+    return res.send( result );
+  } catch ( err ) {
+    console.log( err ); 
+    res.status( 500 ).send( { Status: 500 , Success: false, Error : `${err.name} : ${err.message}`  } );
+  }
+}
+
+
+/**
+ * @description Get specific vendor with the email provided by body
+ * @param req {object} Express req object 
+ * @param res {object} Express res object
+ * @returns {object} success or failure object
+ */
+async function getAvailableVendor ( req, res ) {
+  try {
+    const result = await FileService.findOneAvailable( req.body);
     console.log(result);
     return res.send( result );
   } catch ( err ) {

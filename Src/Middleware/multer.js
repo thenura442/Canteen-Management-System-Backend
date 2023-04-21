@@ -5,7 +5,6 @@ var store = multer.diskStorage({
         cb(null, './Public/Temp');
     },
     filename: (req, file, cb) => {
-        console.log(file);
         var filetype = '';
         if(file.mimetype === 'image/png') {
           filetype = 'png';
@@ -13,19 +12,29 @@ var store = multer.diskStorage({
         if(file.mimetype === 'image/jpeg') {
           filetype = 'jpeg';
         }
-        console.log(file);
         Name = file.originalname.split('.');
         file_name = Name[0].replace(/ /g,"-");
         url = file_name+'--' + Date.now() + '.' + filetype;
-        file.url = url;
+        file.filename = url;
         cb(null, url);
       }
   });
+
+
+// // checking file type
+// const fileFilter = (req, file, cb) => {
+//   if (file.mimetype.startsWith('image')) {
+//       cb(null, true);
+//   } else {
+//       cb(new Error('Not an image! Please upload an image.', 400), false);
+//   }
+// };
   
 const upload = multer({ 
     storage: store,
     limits: { fileSize: 150 * 1024 * 1024 }, // 150 MB
-}).single('file')
+}).single('url')
+
 
 
 module.exports.upload = upload;
