@@ -1,7 +1,7 @@
 const file = require( "../Services/employee.service" );
 const FileService = new file();
 
-module.exports = { createEmployee , findEmployee , updateEmployee, updateEmployeePassword , deleteEmployee};
+module.exports = { createEmployee , findEmployee , updateEmployee, updateEmployeePassword , deleteEmployee, updateEmployeePassword , updatePicture};
 
 /**
  * @description Create a record with the provided body
@@ -53,6 +53,23 @@ async function updateEmployee ( req, res ) {
       res.status( 500 ).send( { Status: 500 , Success: false, Error : `${err.name} : ${err.message}`  } );
     }
   }
+
+
+    /**
+ * @description Update specific User with the email provided by body
+ * @param req {object} Express req object 
+ * @param res {object} Express res object
+ * @returns {object} success or failure object
+ */
+async function updatePicture ( req, res ) {
+  try {
+    const result = await FileService.updatePic( req.body);
+    return res.send( result );
+  } catch ( err ) {
+    console.log( err ); 
+    res.status( 500 ).send( { Status: 500 , Success: false, Error : `${err.name} : ${err.message}`  } );
+  }
+}
 
 
 

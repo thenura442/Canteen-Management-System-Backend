@@ -1,6 +1,8 @@
 const MongooseService = require( '../Utils/functions' ); // Data Access Layer
 const FileModel = require( "../Models/employee.model" ); // Database Model
 const { registerEmployeeValidation } = require("../Validation/employee.validation");
+const aws = require('../Middleware/aws-bucket');  
+const fs = require('fs');
 const bcrypt = require('bcryptjs');
 
 
@@ -90,6 +92,48 @@ class FileService {
 
 
 
+      /**
+   * @description Attempt to update a post with the provided object
+   * @param body {object} Object containing 'email' field and the updated body
+   * to update specific post
+   * @returns {Object}
+   */
+      async updatePic( body ) {
+        try {    
+
+          console.log(body)
+
+            let imageExist = await this.findOne({ email: body.email });
+            console.log(imageExist)
+      
+            await aws.deletefile(imageExist.url);
+    
+            let aws_url = await aws.uploadfile(body.url)
+    
+    
+            fs.unlink(body.url, (err) => {
+              if (err) {
+                throw err;
+              }
+    
+              console.log("Deleted File successfully.");
+            });
+    
+    
+            imageExist.url = aws_url.Location;
+            
+            let process =  await this.MongooseServiceInstance.updateOne({ email: body.email }, imageExist);
+
+            return { url : imageExist.url};
+        } 
+        catch ( err ) {
+            console.log( err)
+            return { Status: 500, Error : `${err.name} : ${err.message} `, Location: "./Src/Services/employee.service.js - updatePic(body)" };
+        }
+    }
+
+
+
     /**
    * @description Attempt to update a post with the provided object
    * @param body {object} Object containing 'email' field and the updated body
@@ -98,13 +142,23 @@ class FileService {
    */
     async updatePassword( body ) {
         try {
+
+           console.log(body.new_password +" - "+ body.retype_new_password)
+            if(body.new_password != body.retype_new_password){return {Status : 400 , Error: "Passwords do not Match"}}
+
+            console.log(body)
+            let user = await this.MongooseServiceInstance.findOne({email : body.email})
+            if(!user){ return null }
+
+            const validPassword = await bcrypt.compare(body.old_password, user.password)
+            if (!validPassword) return { Status: 400, Error: "Please Enter a Valid Old Password" }
+
             //Hashing the Password
             const salt = await bcrypt.genSalt(10);
-            const hashedPassword = await bcrypt.hash(body.password, salt)
-            body.password = hashedPassword;
+            const hashedPassword = await bcrypt.hash(body.new_password, salt)
 
             //Updating document and returning result
-            return await this.MongooseServiceInstance.updateOne({email : body.email},{password : body.password});
+            return await this.MongooseServiceInstance.updateOne({email : body.email},{password : hashedPassword});
         } 
         catch ( err ) {
             console.log( err)

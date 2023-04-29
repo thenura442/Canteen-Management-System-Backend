@@ -28,7 +28,40 @@ class FileService {
       }
 
       cart.products.push(body.products[0])
+
+      let sub_tot = Number(cart.sub_total) + Number(body.products[0].product_total);
+      cart.sub_total = sub_tot.toString();
+
       await this.MongooseServiceInstance.updateOne({customer_email: body.customer_email},cart)  
+
+      return await this.MongooseServiceInstance.findOne({customer_email: body.customer_email});
+
+        // //Validating with joi schema by calling validateRegistration function at the end of the page
+        // if(body != null){
+        //     let { error } = await registerEmployeeValidation(body);
+        //     if (error) return {Status: "400" , Error: error.details[0].message }
+        // }
+
+        // //Check if email already exists
+        // let emailExist = await this.findEmailExist(body.email);
+        // if(emailExist) return  {Status: "400" , Email : emailExist.email, Error: "Email Already Exists!" }
+    } 
+    catch ( err ) {
+      console.log( err)
+      return { Status: 500 , Error : `${err.name} : ${err.message} `, Location: "./Src/Services/employee.service.js - create(body)"};
+    }
+  }
+
+
+
+   /**
+   * @description Attempt to create update with the provided object
+   * @param body {object} Object containing all required fields to
+   * create post
+   * @returns {Object}
+   */
+   async find ( body) {
+    try {
 
       return await this.MongooseServiceInstance.findOne({customer_email: body.customer_email});
 
@@ -127,15 +160,28 @@ class FileService {
           return null;
         }
 
+        console.log(Number(cart.sub_total ) - Number(cart.products[1].product_total))
+
+        let sub_tot = 0;
+        for (let i = 0; i < cart.products.length; i++) {
+          console.log(cart.products[i].id +'-'+ body.id)
+          if(cart.products[i].id == body.id){
+            console.log(cart.products[i].id)
+            sub_tot = Number(cart.sub_total) - Number(cart.products[i].product_total)
+            cart.sub_total = sub_tot.toString();
+          }
+        }
+
         const index = cart.products.indexOf({id: body.id});
 
+      
         const x = cart.products.splice(index, 1);
 
         if(cart.products.length == 0 ){
           return await this.MongooseServiceInstance.deleteOne({customer_email: body.customer_email});
         }
 
-        return await this.MongooseServiceInstance.updateOne({customer_email: body.customer_email},cart)
+        return await this.MongooseServiceInstance.updateOne({customer_email: body.customer_email},cart) 
   
           // //Validating with joi schema by calling validateRegistration function at the end of the page
           // if(body != null){
