@@ -12,6 +12,9 @@ var store = multer.diskStorage({
         if(file.mimetype === 'image/jpeg') {
           filetype = 'jpeg';
         }
+        if(file.mimetype === 'image/jpg') {
+          filetype = 'jpg';
+        }
         Name = file.originalname.split('.');
         file_name = Name[0].replace(/ /g,"-");
         url = file_name+'--' + Date.now() + '.' + filetype;

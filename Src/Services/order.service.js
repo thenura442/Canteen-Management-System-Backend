@@ -84,6 +84,24 @@ class FileService {
     }
 
 
+        /**
+   * @description Attempt to create update with the provided object
+   * @param body {object} Object containing all required fields to
+   * create post
+   * @returns {Object}
+   */
+        async updateStatus ( body) {
+          try {
+            console.log(body)
+            return await this.MongooseServiceInstance.updateOne({id : body.id}, {status : body.status});
+          } 
+          catch ( err ) {
+            console.log( err)
+            return { Status: 500 , Error : `${err.name} : ${err.message} `, Location: "./Src/Services/employee.service.js - updateStatus(body)"};
+          }
+        }
+
+
 
 
 //   /**

@@ -154,28 +154,30 @@ class FileService {
     async deleteItem ( body) {
       try {
   
+        console.log(body)
         //Checking if Cart of the user already exists
         let cart = await this.MongooseServiceInstance.findOne({customer_email: body.customer_email});
         if(cart == null) {
           return null;
         }
 
-        console.log(Number(cart.sub_total ) - Number(cart.products[1].product_total))
-
-        let sub_tot = 0;
+        let sub_tot = cart.sub_total;
         for (let i = 0; i < cart.products.length; i++) {
           console.log(cart.products[i].id +'-'+ body.id)
           if(cart.products[i].id == body.id){
             console.log(cart.products[i].id)
             sub_tot = Number(cart.sub_total) - Number(cart.products[i].product_total)
             cart.sub_total = sub_tot.toString();
+            cart.products.splice(i, 1);
           }
         }
 
-        const index = cart.products.indexOf({id: body.id});
+        // const index = cart.products.indexOf(body.id);
+        // console.log(index)
 
       
-        const x = cart.products.splice(index, 1);
+        // const x = cart.products.splice(index, 1);
+        // console.log(x);
 
         if(cart.products.length == 0 ){
           return await this.MongooseServiceInstance.deleteOne({customer_email: body.customer_email});
