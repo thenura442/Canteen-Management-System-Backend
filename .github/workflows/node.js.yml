@@ -2,7 +2,7 @@ name: DLE Backend
 
 on:
   push:
-    branches: [ "new" ]
+    branches: [ "!master" ]
 
 jobs:
   build:
