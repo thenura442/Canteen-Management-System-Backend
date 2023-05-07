@@ -4,7 +4,8 @@
   "description": "Express Backend For the Canteen Management System",
   "main": "server.js",
   "scripts": {
-    "serve": "nodemon serve.js"
+    "serve": "nodemon serve.js",
+    "test": "mocha tests/ --reporter mochawesome --no-timeout --exit"
   },
   "keywords": [
     "Express",
@@ -32,6 +33,11 @@
     "path": "^0.12.7"
   },
   "devDependencies": {
-    "nodemon": "^2.0.21"
+    "chai": "^4.3.7",
+    "chai-http": "^4.3.0",
+    "mocha": "^10.2.0",
+    "mochawesome": "^7.1.3",
+    "nodemon": "^2.0.20",
+    "supertest": "^6.3.3"
   }
 }
