@@ -143,17 +143,17 @@ class FileService {
     async updatePassword( body ) {
         try {
 
-           console.log(body.new_password +" - "+ body.retype_new_password)
-            if(body.new_password != body.retype_new_password){return {Status : 400 , Error: "Passwords do not Match"}}
+          //  console.log(body.new_password +" - "+ body.retype_new_password)
+          //   if(body.new_password != body.retype_new_password){return {Status : 400 , Error: "Passwords do not Match"}}
 
-            console.log(body)
-            let user = await this.MongooseServiceInstance.findOne({email : body.email})
-            if(!user){ return null }
+          //   console.log(body)
+          //   let user = await this.MongooseServiceInstance.findOne({email : body.email})
+          //   if(!user){ return null }
 
-            const validPassword = await bcrypt.compare(body.old_password, user.password)
-            if (!validPassword) return { Status: 400, Error: "Please Enter a Valid Old Password" }
+          //   const validPassword = await bcrypt.compare(body.old_password, user.password)
+          //   if (!validPassword) return { Status: 400, Error: "Please Enter a Valid Old Password" }
 
-            //Hashing the Password
+          //   //Hashing the Password
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(body.new_password, salt)
 

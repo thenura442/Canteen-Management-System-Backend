@@ -82,6 +82,27 @@ class FileService {
   }
 
 
+    /**
+   * @description Attempt to find a post with the provided object
+   * @param body {object} Object containing '_id' field to
+   * find specific post
+   * @returns {Object}
+   */
+    async getSearchList(body) {
+      try {
+        let items = await this.MongooseServiceInstance.find();
+        console.log(items + ' ---- HI')
+        if (items == null || body.search == null) { return { status: 400 } }
+        return items.filter((items) => items.item_name.toLocaleLowerCase().includes(body.search.toLocaleLowerCase()));
+      }
+      catch (err) {
+        console.log(err)
+        return { Status: 500, Error: `${err.name} : ${err.message} `, Location: "./Src/Services/item.service.js - findSubject(body)" };
+      }
+    }
+  
+
+
   /**
    * @description Attempt to find a update with the provided object
    * @param body {object} Object containing '_id' field to

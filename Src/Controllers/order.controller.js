@@ -1,7 +1,7 @@
 const file = require( "../Services/order.service" );
 const FileService = new file();
 
-module.exports = { createOrder , getOrder, getOrderId , updateStatus};
+module.exports = { createOrder , getOrder, getOrderId , updateStatus , updateOrder , getUserOrders};
 
 /**
  * @description Create a record with the provided body
@@ -37,6 +37,25 @@ async function getOrder ( req, res ) {
   }
 }
 
+
+/**
+ * @description Create a record with the provided body
+ * @param req {object} Express req object 
+ * @param res {object} Express res object
+ * @returns status success or failure
+ */
+async function getUserOrders ( req, res ) {
+  try {
+    const result = await FileService.getUserOrders( req.body);
+    return res.send( result );
+  } catch ( err ) {
+    console.log( err ); 
+    res.status( 500 ).send( { Status: 500 , Success: false, Error : `${err.name} : ${err.message}`  } );
+  }
+}
+
+
+
 /**
  * @description Create a record with the provided body
  * @param req {object} Express req object 
@@ -46,6 +65,24 @@ async function getOrder ( req, res ) {
 async function getOrderId ( req, res ) {
   try {
     const result = await FileService.findOne( req.body);
+    return res.send( result );
+  } catch ( err ) {
+    console.log( err ); 
+    res.status( 500 ).send( { Status: 500 , Success: false, Error : `${err.name} : ${err.message}`  } );
+  }
+}
+
+
+
+/**
+ * @description Create update cart with the provided body
+ * @param req {object} Express req object 
+ * @param res {object} Express res object
+ * @returns status success or failure
+ */
+async function updateOrder ( req, res ) {
+  try {
+    const result = await FileService.updateOrder( req.body);
     return res.send( result );
   } catch ( err ) {
     console.log( err ); 
