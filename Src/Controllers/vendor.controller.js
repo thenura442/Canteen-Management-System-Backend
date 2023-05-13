@@ -63,7 +63,6 @@ async function getAvailableVendors ( req, res ) {
 async function getVendor ( req, res ) {
   try {
     const result = await FileService.findOne( req.body);
-    console.log(result);
     return res.send( result );
   } catch ( err ) {
     console.log( err ); 

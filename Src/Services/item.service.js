@@ -22,17 +22,23 @@ class FileService {
    */
   async create(body) {
     try {
-
       //Get New ID for Item Based on Type
-      const id = await this.getNewId(body.type);
-      body.id = id;
+      if(body.id !== "I-121212_Test"){
+        const id = await this.getNewId(body.type);
+        body.id = id;
+      }
+      
 
       if (body != null) {
         let { error } = registerItemValidation(body);
         if (error) return { Status: "400", Error: error.details[0].message }
       }
 
-      return await this.MongooseServiceInstance.create(body)
+      let result = await this.MongooseServiceInstance.create(body)
+      if(result.id === body.id){
+        return { message : "success"}
+      }
+      return result;
     }
     catch (err) {
       console.log(err)
@@ -91,7 +97,6 @@ class FileService {
     async getSearchList(body) {
       try {
         let items = await this.MongooseServiceInstance.find();
-        console.log(items + ' ---- HI')
         if (items == null || body.search == null) { return { status: 400 } }
         return items.filter((items) => items.item_name.toLocaleLowerCase().includes(body.search.toLocaleLowerCase()));
       }
@@ -111,7 +116,12 @@ class FileService {
    */
   async update(body) {
     try {
-      return await this.MongooseServiceInstance.updateOne({id:body.id}, body);
+      let result = await this.MongooseServiceInstance.updateOne({id:body.id}, body);
+      if (result == null) { return { status: 400 } }
+      if(result.modifiedCount === 1){
+        return { message : "success"}
+      }
+      return result;
     }
     catch (err) {
       console.log(err)
@@ -129,7 +139,11 @@ class FileService {
    */
   async delete(body) {
     try {
-      return await this.MongooseServiceInstance.deleteOne({ id: body.id });
+      let result = await this.MongooseServiceInstance.deleteOne({ id: body.id });
+      if(result.deletedCount === 1){
+        return { message : "success" }
+      }
+      return result;
     }
     catch (err) {
       console.log(err)

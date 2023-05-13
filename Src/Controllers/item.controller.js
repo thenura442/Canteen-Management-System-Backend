@@ -46,7 +46,6 @@ async function getAllItems ( req, res ) {
 async function getItem ( req, res ) {
   try {
     const result = await FileService.findOne( req.body);
-    console.log(result);
     return res.send( result );
   } catch ( err ) {
     console.log( err );
@@ -65,7 +64,6 @@ async function getItem ( req, res ) {
 async function getSearchList ( req, res ) {
   try {
     const result = await FileService.getSearchList( req.body);
-    console.log(result);
     return res.send( result );
   } catch ( err ) {
     console.log( err );

@@ -34,20 +34,25 @@ class FileService {
       let emailExist = await this.findEmailExist(body.email);
       if (emailExist) return { Status: "400", Email: emailExist.email, Error: "Email Already Exists!" }
 
-      let aws_url =  await aws.uploadfile(body.url)
+      if( body.url != "https://canteen-management-system-nsbm.s3.ap-south-1.amazonaws.com/test_store.png"){
+        let aws_url =  await aws.uploadfile(body.url)
 
 
-      fs.unlink(body.url, (err) => {
-        if (err) {
-            throw err;
-        }
+        fs.unlink(body.url, (err) => {
+          if (err) {
+              throw err;
+          }
 
-        console.log("Delete File successfully.");
-    });
-
-
-      body.url = aws_url.Location;
-      return await this.MongooseServiceInstance.create( body )
+          console.log("Delete File successfully.");
+        }); 
+        body.url = aws_url.Location;
+      }
+    
+      let result = await this.MongooseServiceInstance.create(body)
+      if(result.email === body.email){
+        return { message : "success"}
+      }
+      return result;
     }
     catch (err) {
       console.log(err)
@@ -117,7 +122,6 @@ class FileService {
    */
   async findOneAvailable(body) {
     try {
-      console.log(body);
       return await this.MongooseServiceInstance.findOne({ email: body.email, access: "open" });
     }
     catch (err) {
@@ -144,7 +148,6 @@ class FileService {
 
       //Check if image is the same
       let imageExist = await this.findOne({ email: body.email });
-      console.log(imageExist)
       if (imageExist != null && imageExist.url === body.url) {
         return await this.MongooseServiceInstance.updateOne({ email: body.email }, body);
       }
@@ -186,10 +189,15 @@ class FileService {
    */
   async delete(body) {
     try {
-
-      await aws.deletefile(body.url);
-
-      return await this.MongooseServiceInstance.deleteOne({ email: body.email });
+      if( body.url != "https://canteen-management-system-nsbm.s3.ap-south-1.amazonaws.com/test_store.png"){
+        await aws.deletefile(body.url);
+      }
+      
+      let result = await this.MongooseServiceInstance.deleteOne({ email: body.email });
+      if(result.deletedCount === 1){
+        return { message : "success" }
+      }
+      return result;
     }
     catch (err) {
       console.log(err)

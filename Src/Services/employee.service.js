@@ -40,7 +40,12 @@ class FileService {
         body.password = hashedPassword;
 
         //Creating the User
-        return await this.MongooseServiceInstance.create( body )
+      let result = await this.MongooseServiceInstance.create(body)
+      if(result.email === body.email){
+        return { message : "success" }
+      }
+
+      return result;
     } 
     catch ( err ) {
       console.log( err)
@@ -57,7 +62,10 @@ class FileService {
    */
   async findOne( body ) {
     try {
-        return await this.MongooseServiceInstance.findOne({email : body.email})
+      let result = await this.MongooseServiceInstance.findOne({ email: body.email })
+      if(result.email != null || result.email != ""){
+        return { first_name : result.first_name, last_name : result.last_name , nic : result.nic , dob : result.dob , email : result.email , mobile_no : result.mobile_no , address : result.address , access : result.access , url : result.url , type : result.type , vendor : result.vendor }
+      }
     } 
     catch ( err ) {
         console.log( err)
@@ -81,8 +89,12 @@ class FileService {
                 if (error) return {Status: "400" , Error: error.details[0].message }
             }
 
-            //Updating document and returning result
-            return await this.MongooseServiceInstance.updateOne({email : body.email},body);
+           //Updating document and returning result
+            let result = await this.MongooseServiceInstance.updateOne({ email: body.email }, body);
+            if(result.modifiedCount === 1){
+              return { message : "success" }
+            }
+            return result;
         } 
         catch ( err ) {
             console.log( err)
@@ -142,23 +154,24 @@ class FileService {
    */
     async updatePassword( body ) {
         try {
-
-           console.log(body.new_password +" - "+ body.retype_new_password)
             if(body.new_password != body.retype_new_password){return {Status : 400 , Error: "Passwords do not Match"}}
 
-            console.log(body)
             let user = await this.MongooseServiceInstance.findOne({email : body.email})
             if(!user){ return null }
 
             const validPassword = await bcrypt.compare(body.old_password, user.password)
-            if (!validPassword) return { Status: 400, Error: "Please Enter a Valid Old Password" }
+            if (!validPassword) return { Status: 400, Error: "Please Enter the Valid Old Password" }
 
           //   //Hashing the Password
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(body.new_password, salt)
 
             //Updating document and returning result
-            return await this.MongooseServiceInstance.updateOne({email : body.email},{password : hashedPassword});
+            let result = await this.MongooseServiceInstance.updateOne({email : body.email},{password : hashedPassword});
+            if(result.modifiedCount === 1){
+              return { message : "success" }
+            }
+            return result;
         } 
         catch ( err ) {
             console.log( err)
@@ -175,7 +188,11 @@ class FileService {
    */
   async deleteOne( body ) {
     try {
-      return await this.MongooseServiceInstance.deleteOne({email: body.email});
+      let result = await this.MongooseServiceInstance.deleteOne({ email: body.email });
+      if(result.deletedCount === 1){
+        return { message : "success" }
+      }
+      return result;
     } 
     catch ( err ) {
       console.log( err)

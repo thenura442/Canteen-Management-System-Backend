@@ -1,7 +1,7 @@
 const file = require( "../Services/customer.service" );
 const FileService = new file();
 
-module.exports = { createCustomer , findCustomer , updateCustomer, updateCustomerPassword , deleteCustomer};
+module.exports = { createCustomer , findCustomer , updateCustomer, updateCustomerPassword , deleteCustomer , updateMobile};
 
 /**
  * @description Create a record with the provided body
@@ -37,7 +37,6 @@ async function findCustomer ( req, res ) {
     }
   }
 
-
   /**
  * @description Update specific User with the email provided by body
  * @param req {object} Express req object 
@@ -53,6 +52,23 @@ async function updateCustomer ( req, res ) {
       res.status( 500 ).send( { Status: 500 , Success: false, Error : `${err.name} : ${err.message}`  } );
     }
   }
+
+
+    /**
+ * @description Update specific User with the email provided by body
+ * @param req {object} Express req object 
+ * @param res {object} Express res object
+ * @returns {object} success or failure object
+ */
+async function updateMobile ( req, res ) {
+  try {
+    const result = await FileService.updateMobile( req.body);
+    return res.send( result );
+  } catch ( err ) {
+    console.log( err ); 
+    res.status( 500 ).send( { Status: 500 , Success: false, Error : `${err.name} : ${err.message}`  } );
+  }
+}
 
 
 
