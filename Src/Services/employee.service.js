@@ -63,9 +63,10 @@ class FileService {
   async findOne( body ) {
     try {
       let result = await this.MongooseServiceInstance.findOne({ email: body.email })
-      if(result.email != null || result.email != ""){
-        return { first_name : result.first_name, last_name : result.last_name , nic : result.nic , dob : result.dob , email : result.email , mobile_no : result.mobile_no , address : result.address , access : result.access , url : result.url , type : result.type , vendor : result.vendor }
-      }
+      // if(result.email != null || result.email != ""){
+      //   return { first_name : result.first_name, last_name : result.last_name , nic : result.nic , dob : result.dob , email : result.email , mobile_no : result.mobile_no , address : result.address , access : result.access , url : result.url , type : result.type , vendor : result.vendor }
+      // }
+      return result
     } 
     catch ( err ) {
         console.log( err)

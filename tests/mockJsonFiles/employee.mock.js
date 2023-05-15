@@ -31,6 +31,20 @@ const mockFalseObject = {
     "password" : "tester123"
 }
 
+
+const mockLoginObject = {
+    email : "tester122@gmail.com",
+    password : "tester123",
+    type : "staff"
+}
+
+
+const mockFalseLoginObject = {
+    email : "tester122@gmail.com",
+    password : "tester12333",
+    type : "staff"
+}
+
 const findObject = {
     first_name : "Tester",
     last_name : "Ender",
@@ -74,4 +88,4 @@ const updateFalseObject = {
     url : "https://canteen-management-system-nsbm.s3.ap-south-1.amazonaws.com/profile_pic.png"
 }
 
-module.exports = { mockObject , mockFalseObject , findObject , updateObject , updateFalseObject}
+module.exports = { mockLoginObject , mockFalseLoginObject, mockObject , mockFalseObject , findObject , updateObject , updateFalseObject}

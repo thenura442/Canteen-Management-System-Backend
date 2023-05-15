@@ -50,6 +50,32 @@ describe('Employee Routes Tests Suite', () => {
         });
     });
 
+    it('should return employee login as success', done => {
+        chai
+          .request(app)
+          .post('/api/auth/login/web')
+          .send({ email : mock.mockLoginObject.email , password : mock.mockLoginObject.password , type : mock.mockLoginObject.type})
+          .end((err, res) => {
+            res.should.have.status(200);
+            chai.assert.equal("tester122@gmail.com",res.body.email,err)
+            done();
+        });
+    });
+
+
+    it('should return employee login as Incorrect Username or Password', done => {
+        chai
+          .request(app)
+          .post('/api/auth/login/web')
+          .send({ email : mock.mockFalseLoginObject.email , password : mock.mockFalseLoginObject.password , type : mock.mockFalseLoginObject.type})
+          .end((err, res) => {
+            res.should.have.status(200);
+            chai.assert.equal("Email or Password is Incorrect",res.body.Error,err)
+            done();
+        });
+    });
+
+
 
     it('should return the customer information', done => {
         chai

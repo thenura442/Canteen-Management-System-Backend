@@ -146,31 +146,43 @@ class FileService {
         if (error) return { Status: "400", Error: error.details[0].message }
       }
 
+
       //Check if image is the same
       let imageExist = await this.findOne({ email: body.email });
       if (imageExist != null && imageExist.url === body.url) {
-        return await this.MongooseServiceInstance.updateOne({ email: body.email }, body);
+        let result = await this.MongooseServiceInstance.updateOne({ email: body.email }, body);
+        if(result.modifiedCount === 1){
+          return { message : "success"}
+        }
+        return result;
       }
 
       if (imageExist != null && imageExist.url != body.url) {
 
-        await aws.deletefile(imageExist.url);
+        if(body.url != "https://canteen-management-system-nsbm.s3.ap-south-1.amazonaws.com/test_store.png"){
+          await aws.deletefile(imageExist.url);
 
-        let aws_url = await aws.uploadfile(body.url)
-
-
-        fs.unlink(body.url, (err) => {
-          if (err) {
-            throw err;
-          }
-
-          console.log("Deleted File successfully.");
-        });
+          let aws_url = await aws.uploadfile(body.url)
 
 
-        body.url = aws_url.Location;
+          fs.unlink(body.url, (err) => {
+            if (err) {
+              throw err;
+            }
+
+            console.log("Deleted File successfully.");
+          });
+
+
+          body.url = aws_url.Location;
+        }
         
-        return await this.MongooseServiceInstance.updateOne({ email: body.email }, body);
+        let result = await this.MongooseServiceInstance.updateOne({ email: body.email }, body);
+        console.log(result);
+        if(result.modifiedCount === 1){
+          return { message : "success"}
+        }
+        return result;
       }
     }
     catch (err) {

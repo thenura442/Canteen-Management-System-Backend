@@ -24,7 +24,10 @@ class FileService {
       //Checking if Cart of the user already exists
       let cart = await this.MongooseServiceInstance.findOne({customer_email: body.customer_email});
       if(cart == null) {
-        return await this.MongooseServiceInstance.create( body )
+        let result = await this.MongooseServiceInstance.create( body )
+        if(result.customer_email === body.customer_email) {
+          return { message : "success" }
+        }
       }
 
       cart.products.push(body.products[0])
@@ -34,7 +37,12 @@ class FileService {
 
       await this.MongooseServiceInstance.updateOne({customer_email: body.customer_email},cart)  
 
-      return await this.MongooseServiceInstance.findOne({customer_email: body.customer_email});
+      let result = await this.MongooseServiceInstance.findOne({customer_email: body.customer_email});
+      if(result.customer_email === body.customer_email) {
+        return { message : "success" }
+      }
+
+      return result;
 
         // //Validating with joi schema by calling validateRegistration function at the end of the page
         // if(body != null){
@@ -62,7 +70,6 @@ class FileService {
    */
    async find ( body) {
     try {
-
       return await this.MongooseServiceInstance.findOne({customer_email: body.customer_email});
 
         // //Validating with joi schema by calling validateRegistration function at the end of the page
@@ -124,7 +131,12 @@ class FileService {
   async delete ( body) {
     try {
 
-      return await this.MongooseServiceInstance.deleteOne({customer_email: body.customer_email})
+      let result = await this.MongooseServiceInstance.deleteOne({customer_email: body.customer_email})
+      if(result.deletedCount === 1){
+        return { message : "success"}
+      }
+
+      return result
 
         // //Validating with joi schema by calling validateRegistration function at the end of the page
         // if(body != null){
@@ -153,8 +165,6 @@ class FileService {
    */
     async deleteItem ( body) {
       try {
-  
-        console.log(body)
         //Checking if Cart of the user already exists
         let cart = await this.MongooseServiceInstance.findOne({customer_email: body.customer_email});
         if(cart == null) {
@@ -163,9 +173,7 @@ class FileService {
 
         let sub_tot = cart.sub_total;
         for (let i = 0; i < cart.products.length; i++) {
-          console.log(cart.products[i].id +'-'+ body.id)
           if(cart.products[i].id == body.id){
-            console.log(cart.products[i].id)
             sub_tot = Number(cart.sub_total) - Number(cart.products[i].product_total)
             cart.sub_total = sub_tot.toString();
             cart.products.splice(i, 1);
@@ -180,10 +188,16 @@ class FileService {
         // console.log(x);
 
         if(cart.products.length == 0 ){
-          return await this.MongooseServiceInstance.deleteOne({customer_email: body.customer_email});
+          let result = await this.MongooseServiceInstance.deleteOne({customer_email: body.customer_email});
+          if(result.deletedCount === 1){
+            return { message : "success" }
+          }
         }
 
-        return await this.MongooseServiceInstance.updateOne({customer_email: body.customer_email},cart) 
+        let result = await this.MongooseServiceInstance.updateOne({customer_email: body.customer_email},cart) 
+        if(result.modifiedCount === 1) {
+          return { message : "success"}
+        }
   
           // //Validating with joi schema by calling validateRegistration function at the end of the page
           // if(body != null){

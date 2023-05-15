@@ -55,6 +55,31 @@ describe('Vendor Routes Tests Suite', () => {
         });
     });
 
+    it('should update vendor record that was created', done => {
+      chai
+        .request(app)
+        .post(api+'/update/id')
+        .send(mock.updateObject)
+        .end((err, res) => {
+          res.should.have.status(200);
+          chai.assert.equal("success",res.body.message,err)
+          done();
+      });
+    });
+
+
+    it('should recieve invalid mobile when updating vendor record that was created', done => {
+      chai
+        .request(app)
+        .post(api+'/update/id')
+        .send(mock.updateFalseObject)
+        .end((err, res) => {
+          res.should.have.status(200);
+          chai.assert.equal('"mobile_no" length must be at least 10 characters long',res.body.Error,err)
+          done();
+      });
+    });
+
 
     it('should delete vendor record that was created', done => {
         chai

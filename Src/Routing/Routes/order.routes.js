@@ -10,5 +10,6 @@ router.post("/get/user/orders", order.getUserOrders);
 router.post("/update", order.updateOrder);
 router.post("/update/status", order.updateStatus);
 router.post("/get/id", order.getOrderId);
+router.post("/delete/id", order.deleteOrderId);
 
 module.exports = router;

@@ -19,6 +19,7 @@ class LoginService {
      */
     async loginAndAuthenticateWeb(body) {
         try {
+
             //Validate user login with Joi Schema
             let { error } = await loginWebValidation(body)
             if (error) return { Status: "400", Error: error.details[0].message }
@@ -29,9 +30,11 @@ class LoginService {
 
             //Checking Password
             const validPassword = await bcrypt.compare(body.password, User.password)
-            if (!validPassword) return { Status: "400", Error: "Email or Password is Wrong Incorrect" }
+            if (!validPassword) return { Status: "400", Error: "Email or Password is Incorrect" }
 
-            return User;
+            if( validPassword === true ) {
+                return User
+            }
 
             // //User Authorization Token with Jwt Authentication
             // let user = { _id: User._id, email: User.email, type: User.type };
@@ -65,9 +68,11 @@ class LoginService {
 
             //Checking Password
             const validPassword = await bcrypt.compare(body.password, User.password)
-            if (!validPassword) return { Status: "400", Error: "Email or Password is Wrong Incorrect" }
+            if (!validPassword) return { Status: "400", Error: "Email or Password is Incorrect" }
 
-            return User;
+            if( validPassword === true ) {
+                return User
+            }
 
             // //User Authorization Token with Jwt Authentication
             // let user = { _id: User._id, email: User.email, type: User.type };
