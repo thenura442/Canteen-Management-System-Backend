@@ -17,7 +17,7 @@ let name = config.name
 //Cors(cross origin request) options are set here
 const corsOptions={
     credentials: true, 
-    origin:['http://localhost:4200','http://localhost:8100'],
+    origin: "*",
     //credentials:true,            //access-control-allow-credentials:true
     optionsSuccessStatus:200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
