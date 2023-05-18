@@ -160,7 +160,7 @@ class FileService {
 
       //Check if image is the same
       let imageExist = await this.findOne({ id: body.id });
-      if (imageExist != null && imageExist.url === body.url) {
+      if (imageExist != null && imageExist.url === body.url && body.url != "https://canteen-management-system-nsbm.s3.ap-south-1.amazonaws.com/test_pic.jpg") {
         let result = await this.MongooseServiceInstance.updateOne({ id: body.id }, body);
         if(result.modifiedCount === 1){
           return { message : "success"}
@@ -168,7 +168,7 @@ class FileService {
         return result;
       }
 
-      if (imageExist != null && imageExist.url != body.url) {
+      if (imageExist != null && imageExist.url != body.url && body.url != "https://canteen-management-system-nsbm.s3.ap-south-1.amazonaws.com/test_pic.jpg") {
 
         if(body.url != "https://canteen-management-system-nsbm.s3.ap-south-1.amazonaws.com/test_pic.jpg"){
           await aws.deletefile(imageExist.url);
@@ -186,6 +186,14 @@ class FileService {
           body.url = aws_url.Location;
         }
         
+        let result = await this.MongooseServiceInstance.updateOne({ id: body.id }, body);
+        if(result.modifiedCount === 1){
+          return { message : "success"}
+        }
+        return result;
+      }
+
+      if (body.url === "https://canteen-management-system-nsbm.s3.ap-south-1.amazonaws.com/test_pic.jpg"){
         let result = await this.MongooseServiceInstance.updateOne({ id: body.id }, body);
         if(result.modifiedCount === 1){
           return { message : "success"}
@@ -214,6 +222,7 @@ class FileService {
       }
       
       let result = await this.MongooseServiceInstance.deleteOne({ id: body.id });
+      console.log(result);
       if(result.deletedCount === 1){
         return { message : "success" }
       }
