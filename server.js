@@ -18,6 +18,7 @@ let name = config.name
 const corsOptions={
     credentials: true, 
     origin:"*",
+    //
     //credentials:true,            //access-control-allow-credentials:true
     optionsSuccessStatus:200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
