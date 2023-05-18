@@ -114,6 +114,27 @@ class FileService {
   }
 
 
+   /**
+   * @description Attempt to find a post with the provided object
+   * @param body {object} Object containing 'email' field to
+   * find specific post
+   * @returns {Object}
+   */
+   async getMerchant(body) {
+    try {
+      let result = await this.MongooseServiceInstance.findOneMerchant({ email: body.email });
+      if(result != null){
+        return { merchant_id : result.merchant_id};
+      }
+    }
+    catch (err) {
+      console.log(err)
+      return { Status: 500, Error: `${err.name} : ${err.message} `, Location: "./Src/Service/subject.service.js - findSubject(body)" };
+    }
+  }
+
+
+
   /**
    * @description Attempt to find a post with the provided object
    * @param body {object} Object containing 'email' field to
@@ -139,7 +160,6 @@ class FileService {
    */
   async update(body) {
     try {
-
       //Validating with joi schema by calling VendorValidation function
       if (body != null) {
         let { error } = registerVendorValidation(body);
@@ -169,8 +189,6 @@ class FileService {
             if (err) {
               throw err;
             }
-
-            console.log("Deleted File successfully.");
           });
 
 

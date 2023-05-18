@@ -2,6 +2,8 @@
 const MongooseService = require('../Utils/functions'); // Data Access Layer
 const FileModel = require("../Models/item.model"); // Database Model
 const { registerItemValidation } = require("../Validation/item.validation");
+const aws = require('../Middleware/aws-bucket');
+const fs = require('fs');
 
 
 class FileService {
@@ -32,6 +34,20 @@ class FileService {
       if (body != null) {
         let { error } = registerItemValidation(body);
         if (error) return { Status: "400", Error: error.details[0].message }
+      }
+
+      if( body.url != "https://canteen-management-system-nsbm.s3.ap-south-1.amazonaws.com/test_pic.jpg"){
+        let aws_url =  await aws.uploadfile(body.url)
+
+
+        fs.unlink(body.url, (err) => {
+          if (err) {
+              throw err;
+          }
+
+          console.log("Delete File successfully.");
+        }); 
+        body.url = aws_url.Location;
       }
 
       let result = await this.MongooseServiceInstance.create(body)
@@ -66,6 +82,27 @@ class FileService {
       return { Status: 500, Error: `${err.name} : ${err.message} `, Location: "./Src/Services/item.service.js - find(body)" };
     }
   }
+
+
+
+    /**
+   * @description Attempt to find posts with the provided object
+   * @param body {object} Object containing 'type' field to
+   * find posts
+   * @returns {Object}
+   */
+    async getAllVendor(body) {
+      try {
+        console.log(body);
+        let result = await this.MongooseServiceInstance.find({vendor: body.email});
+        if (result == null) { return { status: 400 } }
+        return result;
+      }
+      catch (err) {
+        console.log(err)
+        return { Status: 500, Error: `${err.name} : ${err.message} `, Location: "./Src/Services/item.service.js - find(body)" };
+      }
+    }
 
 
 
@@ -116,12 +153,45 @@ class FileService {
    */
   async update(body) {
     try {
-      let result = await this.MongooseServiceInstance.updateOne({id:body.id}, body);
-      if (result == null) { return { status: 400 } }
-      if(result.modifiedCount === 1){
-        return { message : "success"}
+      if (body != null) {
+        let { error } = registerItemValidation(body);
+        if (error) return { Status: "400", Error: error.details[0].message }
       }
-      return result;
+
+      //Check if image is the same
+      let imageExist = await this.findOne({ id: body.id });
+      if (imageExist != null && imageExist.url === body.url) {
+        let result = await this.MongooseServiceInstance.updateOne({ id: body.id }, body);
+        if(result.modifiedCount === 1){
+          return { message : "success"}
+        }
+        return result;
+      }
+
+      if (imageExist != null && imageExist.url != body.url) {
+
+        if(body.url != "https://canteen-management-system-nsbm.s3.ap-south-1.amazonaws.com/test_pic.jpg"){
+          await aws.deletefile(imageExist.url);
+
+          let aws_url = await aws.uploadfile(body.url)
+
+
+          fs.unlink(body.url, (err) => {
+            if (err) {
+              throw err;
+            }
+          });
+
+
+          body.url = aws_url.Location;
+        }
+        
+        let result = await this.MongooseServiceInstance.updateOne({ id: body.id }, body);
+        if(result.modifiedCount === 1){
+          return { message : "success"}
+        }
+        return result;
+      }
     }
     catch (err) {
       console.log(err)
@@ -139,6 +209,10 @@ class FileService {
    */
   async delete(body) {
     try {
+      if( body.url != "https://canteen-management-system-nsbm.s3.ap-south-1.amazonaws.com/test_pic.jpg"){
+        await aws.deletefile(body.url);
+      }
+      
       let result = await this.MongooseServiceInstance.deleteOne({ id: body.id });
       if(result.deletedCount === 1){
         return { message : "success" }

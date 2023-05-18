@@ -27,6 +27,7 @@ const registerVendorValidation = data => {
         access: Joi.string()
             .max(10)
             .required(),
+        merchant_id: Joi.string(),
         createdAt: Joi.string(),
         updatedAt: Joi.string()
     });

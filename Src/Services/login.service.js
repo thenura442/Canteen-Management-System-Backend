@@ -1,9 +1,10 @@
-const bcrypt = require('bcryptjs');
 //const auth = require('../Middleware/auth');
 const MongooseService = require('../Utils/functions'); // Data Access Layer
 const FileModelEmployee = require("../Models/employee.model"); // Database Model
 const FileModelCustomer = require("../Models/customer.model"); // Database Model
 const { loginWebValidation , loginMobileValidation } = require("../Validation/login.validation");
+const bcrypt = require('bcryptjs');
+const nodemailer = require('nodemailer');
 
 
 class LoginService {
@@ -84,6 +85,108 @@ class LoginService {
             return { Status: 500, Error: `${err.name} : ${err.message} `, Location: "./Src/Service/login.service.js - loginAndAuthenticate(body)" };
         }
     }
+
+
+
+
+    
+    /**
+     * @description Attempt to login with the provided object
+     * @param body {object} Object containing 'email' and 'passwords' fields to
+     * get authenticated
+     * @returns {Object}
+     */
+    async forgotWebUser(body) {
+        try {
+            //Check if email exists
+            let User = await this.findEmailExist(body);
+            console.log(User)
+            if (!User) return { Status: "400", Error: "Email not Found" }
+
+            if (User.first_name != null && User.first_name != ""){
+                var chars = "0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                var passwordLength = 12;
+                var password = "";
+
+                for (var i = 0; i <= passwordLength; i++) {
+                    var randomNumber = Math.floor(Math.random() * chars.length);
+                    password += chars.substring(randomNumber, randomNumber +1);
+                }
+
+                let transporter = nodemailer.createTransport({
+                    host: "smtp.gmail.com",
+                    port: 587,
+                    secure: false, // true for 465, false for other ports
+                    auth: {
+                      user: "adalanane1111@gmail.com",
+                      pass: "otakugamer442"
+                    }
+                  });
+                
+                  let mailOptions = {
+                    from: '"Fun Of Heuristic"<example.gimail.com>', // sender address
+                    to: "adalanane111@gmail.coom", // list of receivers
+                    subject: "Wellcome to Fun Of Heuristic 👻", // Subject line
+                    html: `<h1>Hi Thenura </h1><br>
+                    <h4>Thanks for joining us</h4>`
+                  };
+                
+                  // send mail with defined transport object
+                  let info = await transporter.sendMail(mailOptions);
+                
+                  callback(info);
+
+                // //Hashing the Password
+                // const salt = await bcrypt.genSalt(10);
+                // const hashedPassword = await bcrypt.hash(body.password, salt)
+                // body.password = hashedPassword;
+
+                return { message : "Password reset send Successfully"}
+            }
+        }
+        catch (err) {
+            console.log(err)
+            return { Status: 500, Error: `${err.name} : ${err.message} `, Location: "./Src/Service/login.service.js - loginAndAuthenticate(body)" };
+        }
+    }
+
+
+    /**
+     * @description Attempt to login with the provided object
+     * @param body {object} Object containing 'email' and 'passwords' fields to
+     * get authenticated
+     * @returns {Object}
+     */
+    async forgotMobileUser(body) {
+        try {
+            //Check if email exists
+            let User = await this.findEmailExist(body);
+            if (!User) return { Status: "400", Error: "Email not Found" }
+
+            if (User.first_name != null && User.first_name != ""){
+                var chars = "0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                var passwordLength = 12;
+                var password = "";
+
+                for (var i = 0; i <= passwordLength; i++) {
+                    var randomNumber = Math.floor(Math.random() * chars.length);
+                    password += chars.substring(randomNumber, randomNumber +1);
+                }
+
+                // //Hashing the Password
+                // const salt = await bcrypt.genSalt(10);
+                // const hashedPassword = await bcrypt.hash(body.password, salt)
+                // body.password = hashedPassword;
+
+                return { message : "Password reset send Successfully"}
+            }
+        }
+        catch (err) {
+            console.log(err)
+            return { Status: 500, Error: `${err.name} : ${err.message} `, Location: "./Src/Service/login.service.js - loginAndAuthenticate(body)" };
+        }
+    }
+
 
 
 

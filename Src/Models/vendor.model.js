@@ -7,7 +7,8 @@ const mongoose = require("mongoose");
       description: String,
       url: String,
       mobile_no: String,
-      access: String
+      access: String,
+      merchant_id: String
     },
     { 
       timestamps: true 

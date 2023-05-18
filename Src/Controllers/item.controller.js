@@ -1,7 +1,7 @@
 const file = require( "../Services/item.service" );
 const FileService = new file();
 
-module.exports = { createItem ,getAllItems ,getItem , updateItem , deleteItem , getSearchList};
+module.exports = { createItem ,getAllItems ,getItem , updateItem , deleteItem , getSearchList , getAllVendor};
 
 /**
  * @description Create a cord with the provided body
@@ -29,6 +29,23 @@ async function createItem ( req, res ) {
 async function getAllItems ( req, res ) {
   try {
     const result = await FileService.find( req.body);
+    return res.send( result );
+  } catch ( err ) {
+    console.log( err ); 
+    res.status( 500 ).send( { Status: 500 , Success: false, Error : `${err.name} : ${err.message}`  } );
+  }
+}
+
+
+/**
+ * @description Get all Users with the type provided by body
+ * @param req {object} Express req object 
+ * @param res {object} Express res object
+ * @returns {object} success or failure object
+ */
+async function getAllVendor ( req, res ) {
+  try {
+    const result = await FileService.getAllVendor( req.body);
     return res.send( result );
   } catch ( err ) {
     console.log( err ); 
