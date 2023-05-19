@@ -217,12 +217,11 @@ class FileService {
    */
   async delete(body) {
     try {
-      if( body.url != "https://canteen-management-system-nsbm.s3.ap-south-1.amazonaws.com/test_pic.jpg"){
+      if( body.url != "https://canteen-management-system-nsbm.s3.ap-south-1.amazonaws.com/test_pic.jpg" && body.id != "I-121212_Test"){
         await aws.deletefile(body.url);
       }
       
       let result = await this.MongooseServiceInstance.deleteOne({ id: body.id });
-      console.log(result);
       if(result.deletedCount === 1){
         return { message : "success" }
       }
