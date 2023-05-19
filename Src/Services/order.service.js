@@ -9,6 +9,7 @@ class FileService {
   constructor() {
     // Create instance of Data Access layer using our desired model
     this.MongooseServiceInstance = new MongooseService(FileModel.Order);
+    this.MongooseServiceInstanceCart = new MongooseService(FileModel.Cart);
   }
 
 
@@ -42,7 +43,9 @@ class FileService {
         let res = await this.MongooseServiceInstance.findOne({ id: id })
         if (res == null) {
           body.id = id;
-          return await this.MongooseServiceInstance.create(body)  
+          let result = await this.MongooseServiceInstance.create(body)
+          let del = await this.MongooseServiceInstanceCart.deleteOne({customer_email : body.customer_email})
+          return result;
         }
         else {
           var date = new Date(body.date);
