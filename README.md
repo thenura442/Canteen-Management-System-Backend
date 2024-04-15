@@ -29,8 +29,6 @@ This project aims to provide an efficient, accessible, and user-friendly platfor
 
 - AWS S3 Bucket
 - Token-based Authentication
-- Paypal
-- 
 
 #### Database
 
