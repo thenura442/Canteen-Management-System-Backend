@@ -1,4 +1,4 @@
-# Canteen Management System Frontend
+# Canteen Management System Backend
 
 The University Canteen Management System is a comprehensive solution designed to streamline and modernize the operations of university canteens. 
 This project aims to provide an efficient, accessible, and user-friendly platform for both customers and staff members involved in the university's canteen ecosystem.
